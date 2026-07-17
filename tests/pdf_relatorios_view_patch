@@ -1,0 +1,96 @@
+# Adiciona no início do arquivo relatorios_view.py:
+import customtkinter as ctk
+from app.controller.pdf_relatorio_controller import (
+    buscar_dados_balanco_estoque,
+    buscar_dados_estoque_minimo,
+)
+from app.utils.pdf_generator import (
+    gerar_pdf_balanco_estoque,
+    gerar_pdf_estoque_minimo,
+)
+
+# Caminho da logo — ajusta conforme seu projeto
+import os
+LOGO_PATH = os.path.join(os.path.dirname(__file__), "..", "assets", "logo.png")
+
+
+# ── Substitui os métodos mostrar_balanco_estoque e mostrar_estoque_minimo ─────
+
+def mostrar_balanco_estoque(self):
+    self.limpar_area()
+
+    self.criar_cabecalho_tela("Balanço de Estoque", "📦")
+
+    conteudo = ctk.CTkFrame(self.area_principal.area_tela, fg_color="#FDFAF6")
+    conteudo.pack(fill="both", expand=True, padx=30, pady=10)
+
+    # Mensagem central
+    ctk.CTkLabel(
+        conteudo,
+        text="📦  Clique em 'Gerar PDF' para exportar o balanço completo do estoque.",
+        font=("Arial", 14),
+        text_color="#7A6A5A"
+    ).pack(expand=True)
+
+    # Botão Gerar PDF
+    ctk.CTkButton(
+        conteudo,
+        text="📄  Gerar PDF",
+        height=45,
+        width=200,
+        fg_color="#D95C02",
+        hover_color="#BF4F00",
+        text_color="white",
+        font=("Arial", 14, "bold"),
+        corner_radius=10,
+        command=self._gerar_pdf_balanco
+    ).pack(pady=20)
+
+
+def mostrar_estoque_minimo(self):
+    self.limpar_area()
+
+    self.criar_cabecalho_tela("Estoque Mínimo", "⚠️")
+
+    conteudo = ctk.CTkFrame(self.area_principal.area_tela, fg_color="#FDFAF6")
+    conteudo.pack(fill="both", expand=True, padx=30, pady=10)
+
+    # Mensagem central
+    ctk.CTkLabel(
+        conteudo,
+        text="⚠️  Clique em 'Gerar PDF' para exportar os produtos abaixo do estoque mínimo.",
+        font=("Arial", 14),
+        text_color="#7A6A5A"
+    ).pack(expand=True)
+
+    # Botão Gerar PDF
+    ctk.CTkButton(
+        conteudo,
+        text="📄  Gerar PDF",
+        height=45,
+        width=200,
+        fg_color="#D95C02",
+        hover_color="#BF4F00",
+        text_color="white",
+        font=("Arial", 14, "bold"),
+        corner_radius=10,
+        command=self._gerar_pdf_estoque_minimo
+    ).pack(pady=20)
+
+
+def _gerar_pdf_balanco(self):
+    try:
+        dados = buscar_dados_balanco_estoque()
+        gerar_pdf_balanco_estoque(dados, logo_path=LOGO_PATH)
+    except Exception as e:
+        from tkinter import messagebox
+        messagebox.showerror("Erro", f"Não foi possível gerar o PDF:\n{e}")
+
+
+def _gerar_pdf_estoque_minimo(self):
+    try:
+        dados = buscar_dados_estoque_minimo()
+        gerar_pdf_estoque_minimo(dados, logo_path=LOGO_PATH)
+    except Exception as e:
+        from tkinter import messagebox
+        messagebox.showerror("Erro", f"Não foi possível gerar o PDF:\n{e}")

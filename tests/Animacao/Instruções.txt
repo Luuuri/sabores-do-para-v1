@@ -1,0 +1,27 @@
+
+Passos na ordem certa
+1. Gere o WebP (uma vez só):
+
+python generate_login_animation.py
+
+Coloque o login_panel.webp gerado na mesma pasta do seu login.py.
+
+2. No seu login.py, faça exatamente 5 mudanças:
+
+Remova este import:
+
+from app.utils.gradiente1 import gradiente
+
+Adicione ImageTk e os aos imports já existentes:
+
+import os
+from PIL import Image, ImageTk   # ImageTk é o que faltava
+
+Após tela.update() e os cálculos de largura_canvas/altura_canvas, cole o bloco de carregamento dos frames (seção [3] do arquivo integracao_login.py).
+
+Mova a criação do logo para fora de animar() — ele estava sendo recriado 60 vezes por segundo (seção [4]).
+
+Substitua o corpo de animar() pela versão da seção [5] — a única diferença real é que gradiente(canvas, ...) vira canvas.create_image(0, 0, anchor="nw", image=_frames_tk[_frame_idx]). Os textos e o tela.after() continuam idênticos.
+
+O que não muda
+Todo o painel direito — campos de e-mail, senha, checkbox, botão, rodapé — não precisa de nenhuma alteração. O canvas continua no mesmo place(), com as mesmas dimensões relativas. A animação entra exatamente onde o gradiente antigo estava
